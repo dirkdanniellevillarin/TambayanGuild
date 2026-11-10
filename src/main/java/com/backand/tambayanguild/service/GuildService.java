@@ -25,11 +25,19 @@ public class GuildService {
 
     public GuildEntity create(GuildEntity GuildEntity) { 
         GuildEntity.setId(null); 
+        if (guilds.existsByName(GuildEntity.getName())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT, "Guild name is already taken");
+        }
         return guilds.save(GuildEntity); 
     }
 
     public GuildEntity update(Long id, GuildEntity input) {
         GuildEntity GuildEntity = findById(id);
+        if (guilds.existsByNameAndIdNot(input.getName(), id)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT, "Guild name is already taken");
+        }
         GuildEntity.setOwner(input.getOwner()); 
         GuildEntity.setName(input.getName()); GuildEntity.setDescription(input.getDescription());
         return guilds.save(GuildEntity);

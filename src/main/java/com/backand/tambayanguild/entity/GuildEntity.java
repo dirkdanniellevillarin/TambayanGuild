@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "guilds")
+@Table(name = "guilds", uniqueConstraints = @UniqueConstraint(name = "uk_guilds_name", columnNames = "name"))
 public class GuildEntity {
 
     @Id
@@ -20,7 +20,7 @@ public class GuildEntity {
     private UserEntity owner;
 
     //GuildEntity name
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     //GuildEntity description(optional)
