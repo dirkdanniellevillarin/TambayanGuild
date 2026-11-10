@@ -3,6 +3,8 @@ package com.backand.tambayanguild.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "guilds")
 public class GuildEntity {
@@ -12,6 +14,7 @@ public class GuildEntity {
     private Long id;
 
     // Pwede rah maka create ug many guilds ang isa UserEntity pero ang usa ka GuildEntity kay naay usa ra ka owner. Mao nga many to one ni siya.
+    @JsonBackReference  // to skip serializing the parent reference on the way back down, stopping the infinite loop
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity owner;

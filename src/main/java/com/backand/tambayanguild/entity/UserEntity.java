@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "users") // reserve word nani sya di nani pwede gamiton
 public class UserEntity {
@@ -31,6 +33,7 @@ public class UserEntity {
     private LocalDateTime createdAt;
 
     //GuildEntity owner
+    @JsonManagedReference   // to serialize the child list normally
     @OneToMany(mappedBy = "owner")
     private List<GuildEntity> ownedGuilds = new ArrayList<>();
 
