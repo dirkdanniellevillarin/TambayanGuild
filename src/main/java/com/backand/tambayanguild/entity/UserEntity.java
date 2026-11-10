@@ -1,12 +1,14 @@
 package com.backand.tambayanguild.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users") // reserve word nani sya di nani pwede gamiton
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "uk_users_username", columnNames = "username"))
 public class UserEntity {
 
     // auto increment rani guys
@@ -15,7 +17,7 @@ public class UserEntity {
     private Long id;
 
     // username
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     // email add
@@ -24,6 +26,7 @@ public class UserEntity {
 
     //pass
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Accept in requests, omit from responses.
     private String password;
 
     //datecreation
@@ -32,6 +35,7 @@ public class UserEntity {
 
     //GuildEntity owner
     @OneToMany(mappedBy = "owner")
+    @JsonIgnore // Prevents recursions
     private List<GuildEntity> ownedGuilds = new ArrayList<>();
 
     public UserEntity() {}
