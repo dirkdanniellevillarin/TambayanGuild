@@ -28,7 +28,7 @@ public class Guild {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    protected Guild() {}
+    public Guild() {}
 
     public Guild(User owner, String name, String description) {
         this.owner = owner;
@@ -43,6 +43,7 @@ public class Guild {
     }
 
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public User getOwner() { return owner; }
     public void setOwner(User owner) { this.owner = owner; }
     public String getName() { return name; }

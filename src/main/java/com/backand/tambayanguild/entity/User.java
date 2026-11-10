@@ -34,7 +34,7 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private List<Guild> ownedGuilds = new ArrayList<>();
 
-    protected User() {}
+    public User() {}
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -49,6 +49,7 @@ public class User {
     }
 
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getEmail() { return email; }
