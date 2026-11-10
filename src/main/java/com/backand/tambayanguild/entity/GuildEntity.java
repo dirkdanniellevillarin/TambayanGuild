@@ -42,13 +42,40 @@ public class GuildEntity {
         if (createdAt == null) createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public UserEntity getOwner() { return owner; }
-    public void setOwner(UserEntity owner) { this.owner = owner; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public Long getId() { 
+        return id; 
+    }
+
+    public void setId(Long id) { 
+        this.id = id; 
+    }
+
+    public UserEntity getOwner() { 
+        return owner; 
+    }
+
+    public void setOwner(UserEntity owner) { 
+        this.owner = owner; 
+    }
+
+    public String getName() { 
+        return name; 
+    }
+
+    public void setName(String name) { 
+        this.name = name; 
+    }
+
+    public String getDescription() { 
+        return description; 
+    }
+
+    public void setDescription(String description) { 
+        this.description = description; 
+    }
+
+    public LocalDateTime getCreatedAt() { 
+        return createdAt; 
+    }
+    
 }
