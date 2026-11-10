@@ -1,11 +1,11 @@
 package com.backand.tambayanguild.service;
 
-import com.backand.tambayanguild.entity.Guild;
+import com.backand.tambayanguild.entity.GuildEntity;
 import com.backand.tambayanguild.repository.GuildRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-//Implements CRUD operations for Guild entity
+//Implements CRUD operations for GuildEntity entity
 @Service
 public class GuildService {
 
@@ -15,22 +15,22 @@ public class GuildService {
         this.guilds = guilds; 
     }
 
-    public List<Guild> findAll() { 
+    public List<GuildEntity> findAll() { 
         return guilds.findAll(); 
     }
 
-    public Guild findById(Long id) { 
-        return guilds.findById(id).orElseThrow(() -> new IllegalArgumentException("Guild not found: " + id)); 
+    public GuildEntity findById(Long id) { 
+        return guilds.findById(id).orElseThrow(() -> new IllegalArgumentException("GuildEntity not found: " + id)); 
     }
 
-    public Guild create(Guild guild) { 
-        guild.setId(null); return guilds.save(guild); 
+    public GuildEntity create(GuildEntity GuildEntity) { 
+        GuildEntity.setId(null); return guilds.save(GuildEntity); 
     }
 
-    public Guild update(Long id, Guild input) {
-        Guild guild = findById(id);
-        guild.setOwner(input.getOwner()); guild.setName(input.getName()); guild.setDescription(input.getDescription());
-        return guilds.save(guild);
+    public GuildEntity update(Long id, GuildEntity input) {
+        GuildEntity GuildEntity = findById(id);
+        GuildEntity.setOwner(input.getOwner()); GuildEntity.setName(input.getName()); GuildEntity.setDescription(input.getDescription());
+        return guilds.save(GuildEntity);
     }
     
     public void delete(Long id) { guilds.delete(findById(id)); }

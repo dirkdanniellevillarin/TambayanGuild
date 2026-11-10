@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users") // reserve word nani sya di nani pwede gamiton
-public class User {
+public class UserEntity {
 
     // auto increment rani guys
     @Id
@@ -30,13 +30,13 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    //guild owner
+    //GuildEntity owner
     @OneToMany(mappedBy = "owner")
-    private List<Guild> ownedGuilds = new ArrayList<>();
+    private List<GuildEntity> ownedGuilds = new ArrayList<>();
 
-    public User() {}
+    public UserEntity() {}
 
-    public User(String username, String email, String password) {
+    public UserEntity(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -57,5 +57,5 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public List<Guild> getOwnedGuilds() { return ownedGuilds; }
+    public List<GuildEntity> getOwnedGuilds() { return ownedGuilds; }
 }

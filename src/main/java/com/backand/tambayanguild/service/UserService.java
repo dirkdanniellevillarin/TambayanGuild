@@ -1,11 +1,11 @@
 package com.backand.tambayanguild.service;
 
-import com.backand.tambayanguild.entity.User;
+import com.backand.tambayanguild.entity.UserEntity;
 import com.backand.tambayanguild.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-//Implements CRUD operations for User entity
+//Implements CRUD operations for UserEntity entity
 @Service
 public class UserService {
 
@@ -15,22 +15,22 @@ public class UserService {
         this.users = users; 
     }
     
-    public List<User> findAll() { 
+    public List<UserEntity> findAll() { 
         return users.findAll(); 
     }
 
-    public User findById(Long id) { 
-        return users.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found: " + id)); 
+    public UserEntity findById(Long id) { 
+        return users.findById(id).orElseThrow(() -> new IllegalArgumentException("UserEntity not found: " + id)); 
     }
 
-    public User create(User user) { 
-        user.setId(null); return users.save(user); 
+    public UserEntity create(UserEntity UserEntity) { 
+        UserEntity.setId(null); return users.save(UserEntity); 
     }
 
-    public User update(Long id, User input) {
-        User user = findById(id);
-        user.setUsername(input.getUsername()); user.setEmail(input.getEmail()); user.setPassword(input.getPassword());
-        return users.save(user);
+    public UserEntity update(Long id, UserEntity input) {
+        UserEntity UserEntity = findById(id);
+        UserEntity.setUsername(input.getUsername()); UserEntity.setEmail(input.getEmail()); UserEntity.setPassword(input.getPassword());
+        return users.save(UserEntity);
     }
     
     public void delete(Long id) { users.delete(findById(id)); }

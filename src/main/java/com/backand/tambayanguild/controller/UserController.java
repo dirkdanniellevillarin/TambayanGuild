@@ -1,12 +1,12 @@
 package com.backand.tambayanguild.controller;
 
-import com.backand.tambayanguild.entity.User;
+import com.backand.tambayanguild.entity.UserEntity;
 import com.backand.tambayanguild.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-//REST endpoints setters and getters for user entity
+//REST endpoints setters and getters for UserEntity entity
 @RestController
 @RequestMapping("/api/users")
 
@@ -19,24 +19,24 @@ public class UserController {
     }
 
     @GetMapping 
-    public List<User> getAll() { 
+    public List<UserEntity> getAll() { 
         return service.findAll(); 
     }
 
     @GetMapping("/{id}") 
-    public User getOne(@PathVariable Long id) { 
+    public UserEntity getOne(@PathVariable Long id) { 
         return service.findById(id); 
     }
 
     @PostMapping 
     @ResponseStatus(HttpStatus.CREATED) 
-    public User create(@RequestBody User user) { 
-        return service.create(user); 
+    public UserEntity create(@RequestBody UserEntity UserEntity) { 
+        return service.create(UserEntity); 
     }
 
     @PutMapping("/{id}") 
-    public User update(@PathVariable Long id, @RequestBody User user) { 
-        return service.update(id, user); 
+    public UserEntity update(@PathVariable Long id, @RequestBody UserEntity UserEntity) { 
+        return service.update(id, UserEntity); 
     }
 
     @DeleteMapping("/{id}")

@@ -1,12 +1,12 @@
 package com.backand.tambayanguild.controller;
 
-import com.backand.tambayanguild.entity.Guild;
+import com.backand.tambayanguild.entity.GuildEntity;
 import com.backand.tambayanguild.service.GuildService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-//REST endpoints setters and getters for guild entity
+//REST endpoints setters and getters for GuildEntity entity
 @RestController
 @RequestMapping("/api/guilds")
 
@@ -19,23 +19,23 @@ public class GuildController {
     }
 
     @GetMapping 
-    public List<Guild> getAll() {
+    public List<GuildEntity> getAll() {
         return service.findAll(); 
     }
 
     @GetMapping("/{id}") 
-    public Guild getOne(@PathVariable Long id) { 
+    public GuildEntity getOne(@PathVariable Long id) { 
         return service.findById(id); 
     }
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED) 
-    public Guild create(@RequestBody Guild guild) { 
-        return service.create(guild); 
+    public GuildEntity create(@RequestBody GuildEntity GuildEntity) { 
+        return service.create(GuildEntity); 
     }
 
     @PutMapping("/{id}") 
-    public Guild update(@PathVariable Long id, @RequestBody Guild guild) { 
-        return service.update(id, guild); 
+    public GuildEntity update(@PathVariable Long id, @RequestBody GuildEntity GuildEntity) { 
+        return service.update(id, GuildEntity); 
     }
 
     @DeleteMapping("/{id}") 
