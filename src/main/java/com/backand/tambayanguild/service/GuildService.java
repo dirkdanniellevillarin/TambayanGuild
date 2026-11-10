@@ -24,14 +24,18 @@ public class GuildService {
     }
 
     public GuildEntity create(GuildEntity GuildEntity) { 
-        GuildEntity.setId(null); return guilds.save(GuildEntity); 
+        GuildEntity.setId(null); 
+        return guilds.save(GuildEntity); 
     }
 
     public GuildEntity update(Long id, GuildEntity input) {
         GuildEntity GuildEntity = findById(id);
-        GuildEntity.setOwner(input.getOwner()); GuildEntity.setName(input.getName()); GuildEntity.setDescription(input.getDescription());
+        GuildEntity.setOwner(input.getOwner()); 
+        GuildEntity.setName(input.getName()); GuildEntity.setDescription(input.getDescription());
         return guilds.save(GuildEntity);
     }
     
-    public void delete(Long id) { guilds.delete(findById(id)); }
+    public void delete(Long id) { 
+        guilds.delete(findById(id)); 
+    }
 }

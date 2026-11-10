@@ -35,7 +35,7 @@ public class GuildController {
 
     @PutMapping("/{id}") 
     public GuildEntity update(@PathVariable Long id, @RequestBody GuildEntity GuildEntity) { 
-        return service.update(id, GuildEntity); 
+            return service.update(id, GuildEntity); 
     }
 
     @DeleteMapping("/{id}") 

@@ -24,12 +24,15 @@ public class UserService {
     }
 
     public UserEntity create(UserEntity UserEntity) { 
-        UserEntity.setId(null); return users.save(UserEntity); 
+        UserEntity.setId(null); 
+        return users.save(UserEntity); 
     }
 
     public UserEntity update(Long id, UserEntity input) {
         UserEntity UserEntity = findById(id);
-        UserEntity.setUsername(input.getUsername()); UserEntity.setEmail(input.getEmail()); UserEntity.setPassword(input.getPassword());
+        UserEntity.setUsername(input.getUsername()); 
+        UserEntity.setEmail(input.getEmail()); 
+        UserEntity.setPassword(input.getPassword());
         return users.save(UserEntity);
     }
     
