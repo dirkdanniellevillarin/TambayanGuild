@@ -1,0 +1,125 @@
+Tambayan Guild Backend - Presentation Notes
+==============================================
+
+Architecture
+------------
+entity/: UserEntity and GuildEntity map Java objects to database tables.
+repository/: Spring Data JPA interfaces provide database operations.
+service/: CRUD application logic.
+controller/: REST endpoints used by Postman or a frontend.
+
+UserEntity
+----------
+@Entity marks the class as a JPA entity.
+@Table(name = "users") maps it to the database table named users.
+@Id marks id as the primary key.
+@GeneratedValue(strategy = GenerationType.IDENTITY) lets MariaDB auto-increment the ID.
+username, email, and password store account fields. @Column(nullable = false) requires a value.
+createdAt is a LocalDateTime mapped to the SQL column created_at.
+@OneToMany(mappedBy = "owner") means one user can own multiple guilds. GuildEntity.owner is the relationship's foreign-key side.
+The no-argument constructor is required by JPA. The other constructor is a convenience for making a user.
+@PrePersist runs before insertion. setCreationTimeIfMissing() fills createdAt when it is empty.
+Getters read fields; setters update fields. The ID setter lets create logic clear a supplied ID and use database generation.
+
+GuildEntity
+-----------
+@Entity and @Table(name = "guilds") map this class to the guilds table.
+id is an auto-incrementing primary key.
+@ManyToOne(fetch = FetchType.LAZY, optional = false) means many guilds can have one owner. LAZY loads the owner when needed; optional=false requires one.
+@JoinColumn(name = "user_id", nullable = false) maps the owner to guilds.user_id, a foreign key referencing users.id.
+name is required. description is optional and uses SQL TEXT. createdAt maps to created_at and is required.
+The no-argument constructor supports JPA. The other constructor accepts the owner, name, and description.
+@PrePersist fills in createdAt before a new row is inserted.
+The relationship is one user owning many guilds; each guild has one owner.
+
+Repositories
+------------
+UserRepository extends JpaRepository<UserEntity, Long>.
+GuildRepository extends JpaRepository<GuildEntity, Long>.
+Spring Data supplies findAll(), findById(), save(), and delete() without handwritten SQL.
+
+Services
+--------
+@Service registers each service with Spring.
+Constructor injection gives UserService its UserRepository and GuildService its GuildRepository.
+findAll() returns all rows.
+findById(id) returns one row or raises an error if missing.
+create(entity) clears the supplied ID and saves a new row.
+update(id, input) loads an existing row, copies editable fields, and saves it.
+delete(id) finds the row and removes it.
+A guild must reference an existing owner, whose ID is stored as guilds.user_id.
+
+Controllers and routes
+----------------------
+@RestController exposes HTTP endpoints and returns data as JSON.
+@RequestMapping("/api/users") sets the user controller's base route.
+@RequestMapping("/api/guilds") sets the guild controller's base route.
+@GetMapping lists records; @GetMapping("/{id}") gets one.
+@PostMapping creates; @PutMapping("/{id}") updates; @DeleteMapping("/{id}") deletes.
+@PathVariable reads an ID from the URL. @RequestBody converts request JSON into a Java object.
+Successful POST returns 201 Created. Successful DELETE returns 204 No Content.
+Request flow: controller -> service -> repository -> database; the result returns to the client as JSON.
+
+Users:
+GET    http://localhost:8080/api/users
+GET    http://localhost:8080/api/users/{id}
+POST   http://localhost:8080/api/users
+PUT    http://localhost:8080/api/users/{id}
+DELETE http://localhost:8080/api/users/{id}
+
+Guilds:
+GET    http://localhost:8080/api/guilds
+GET    http://localhost:8080/api/guilds/{id}
+POST   http://localhost:8080/api/guilds
+PUT    http://localhost:8080/api/guilds/{id}
+DELETE http://localhost:8080/api/guilds/{id}
+
+XAMPP / MariaDB settings
+------------------------
+application.properties connects Spring to localhost:3306 and selects tambayan_guild.
+spring.datasource.username=root selects the MariaDB account.
+spring.datasource.password=${DB_PASSWORD:} reads DB_PASSWORD from the environment; if unset, it defaults to blank.
+spring.datasource.driver-class-name selects MySQL Connector/J, which connects to MariaDB.
+spring.jpa.hibernate.ddl-auto=update asks Hibernate to create/update tables based on entities during development.
+spring.jpa.show-sql=true logs SQL; hibernate.format_sql makes it readable.
+
+Testing in Postman
+------------------
+Start MySQL in XAMPP. From the project directory run:
+    .\mvnw.cmd spring-boot:run
+Wait for "Started TambayanGuildApplication" and leave the terminal running.
+
+Create a user with POST http://localhost:8080/api/users, choosing Body -> raw -> JSON:
+{
+  "username": "alex",
+  "email": "alex@example.com",
+  "password": "test123"
+}
+A successful request returns 201 Created and the generated ID. The earlier 400 Bad Request occurred because the POST body was empty. The response panel is read-only; enter JSON in the request Body tab.
+
+List users with GET http://localhost:8080/api/users.
+
+Create a guild with POST http://localhost:8080/api/guilds and an existing user's ID:
+{
+  "owner": { "id": 1 },
+  "name": "Study Group",
+  "description": "CSIT review"
+}
+Replace 1 with the actual user ID.
+
+Why the username USER is allowed
+--------------------------------
+The database table is users and its username column is an identifier. The submitted text USER or users is a data value, not a table or column identifier. Reserved-word rules concern SQL identifiers; they do not prevent those words being stored as text. The screenshot showed USER stored in the users.username column.
+
+Tables
+------
+When the application started, Hibernate connected to tambayan_guild and created users and guilds. guilds.user_id references users.id. Refresh the database Structure view in phpMyAdmin to see the tables.
+
+Presentation summary
+--------------------
+"We organized the backend into entities, repositories, services, and controllers. UserEntity and GuildEntity map Java classes to users and guilds. Spring Data JPA repositories provide database operations. Services handle CRUD logic, and REST controllers expose it through HTTP. We connected Spring Boot to XAMPP MariaDB and tested the endpoints in Postman by sending JSON."
+
+Important prototype note
+------------------------
+The current code saves password text directly. Real applications must hash passwords securely and must not return passwords in API responses.
+
