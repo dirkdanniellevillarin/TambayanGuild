@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface GuildRepository extends JpaRepository<GuildEntity, Long> {
     boolean existsByName(String name);
     boolean existsByNameAndIdNot(String name, Long id);
+    java.util.Optional<GuildEntity> findByInviteCodeIgnoreCase(String inviteCode);
 }

@@ -10,7 +10,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "uk_users_username", columnNames = "username"))
+@Table(name = "users", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_users_username", columnNames = "username"),
+    @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+})
 public class UserEntity {
 
     // auto increment rani guys
@@ -23,7 +26,7 @@ public class UserEntity {
     private String username;
 
     // email add
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     //pass
@@ -34,6 +37,21 @@ public class UserEntity {
     //datecreation
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private long xp = 0;
+
+    @Column(nullable = false)
+    private long coins = 0;
+
+    @Column(nullable = false)
+    private int currentStreak = 0;
+
+    @Column(nullable = false)
+    private int bestStreak = 0;
+
+    @Column(length = 500)
+    private String avatarUrl;
 
     //GuildEntity owner
     @JsonManagedReference   // to serialize the child list normally
@@ -92,4 +110,15 @@ public class UserEntity {
     public List<GuildEntity> getOwnedGuilds() { 
         return ownedGuilds; 
     }
+
+    public long getXp() { return xp; }
+    public void setXp(long xp) { this.xp = xp; }
+    public long getCoins() { return coins; }
+    public void setCoins(long coins) { this.coins = coins; }
+    public int getCurrentStreak() { return currentStreak; }
+    public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
+    public int getBestStreak() { return bestStreak; }
+    public void setBestStreak(int bestStreak) { this.bestStreak = bestStreak; }
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 }

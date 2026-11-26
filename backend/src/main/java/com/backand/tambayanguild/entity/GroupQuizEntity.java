@@ -27,7 +27,7 @@ public class GroupQuizEntity {
     // deck the questions come from (optional)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deck_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "guild", "createdBy"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "guild", "createdBy", "flashcards"})
     private DeckEntity deck;
 
     @Column(nullable = false)
@@ -42,6 +42,15 @@ public class GroupQuizEntity {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "scheduled_at")
+    private LocalDateTime scheduledAt;
+
+    @Column(name="started_at")
+    private LocalDateTime startedAt;
+
+    @Column(name="ends_at")
+    private LocalDateTime endsAt;
 
     public GroupQuizEntity() {}
 
@@ -77,4 +86,10 @@ public class GroupQuizEntity {
     public void setTitle(String title) { this.title = title; }
     public void setStatus(String status) { this.status = status; }
     public void setTimeLimitSeconds(Integer timeLimitSeconds) { this.timeLimitSeconds = timeLimitSeconds; }
+    public LocalDateTime getScheduledAt() { return scheduledAt; }
+    public void setScheduledAt(LocalDateTime scheduledAt) { this.scheduledAt = scheduledAt; }
+    public LocalDateTime getStartedAt(){return startedAt;}
+    public void setStartedAt(LocalDateTime startedAt){this.startedAt=startedAt;}
+    public LocalDateTime getEndsAt(){return endsAt;}
+    public void setEndsAt(LocalDateTime endsAt){this.endsAt=endsAt;}
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -25,7 +26,7 @@ public class DeckEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "guild_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "owner"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "owner", "inviteCode"})
     private GuildEntity guild;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -43,6 +44,11 @@ public class DeckEntity {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy="deck",cascade=jakarta.persistence.CascadeType.ALL,orphanRemoval=true)
+    @com.fasterxml.jackson.annotation.JsonManagedReference("deck-flashcards")
+    private java.util.List<FlashcardEntity> flashcards=new java.util.ArrayList<>();
+
 
     public DeckEntity() {}
 
@@ -67,6 +73,7 @@ public class DeckEntity {
     public String getDescription() { return description; }
     public String getSubject() { return subject; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+    @com.fasterxml.jackson.annotation.JsonIgnore public java.util.List<FlashcardEntity> getFlashcards(){return flashcards;}
 
     public void setId(Long id) { this.id = id; }
     public void setGuild(GuildEntity guild) { this.guild = guild; }

@@ -9,6 +9,7 @@ import com.backand.tambayanguild.service.DeckService;
 @RestController
 @RequestMapping("/api/decks")
 public class DeckController {
+    @Autowired com.backand.tambayanguild.service.CurrentUserService current;
     @Autowired
     DeckService dserv;
 
@@ -17,30 +18,34 @@ public class DeckController {
 
     // Create
     @PostMapping("/postNewDeck")
-    public DeckEntity postDeck(@RequestBody DeckEntity deck) {
-        return dserv.postDeck(deck);
+    public Object postDeck(@RequestBody DeckEntity deck) {
+        current.requireUser(deck.getCreatedBy()==null?null:deck.getCreatedBy().getId());
+        deck.setCreatedBy(new com.backand.tambayanguild.entity.UserEntity());deck.getCreatedBy().setId(current.requireUserId());
+        return dserv.deckView(dserv.postDeck(deck));
     }
 
     // Read
     @GetMapping("/getAllDecks")
-    public List<DeckEntity> getAllDecks() {
-        return dserv.getAllDecks();
+    public List<Object> getAllDecks() {
+        current.requireUser(null);return dserv.getAllDecksForUser(current.requireUserId()).stream().map(d->(Object)dserv.deckView(d)).toList();
     }
 
     @GetMapping("/getDecksByGuild/{guildId}")
-    public List<DeckEntity> getDecksByGuild(@PathVariable Long guildId) {
-        return dserv.getDecksByGuild(guildId);
+    public List<Object> getDecksByGuild(@PathVariable Long guildId) {
+        current.requireUser(null);return dserv.getDecksForMember(guildId,current.requireUserId()).stream().map(d->(Object)dserv.deckView(d)).toList();
     }
 
     // Update
     @PutMapping("/putDeckDetails")
-    public DeckEntity putDeckDetails(@RequestParam Long id, @RequestBody DeckEntity newDeckDetails) {
-        return dserv.putDeckDetails(id, newDeckDetails);
+    public Object putDeckDetails(@RequestParam Long id,@RequestParam(required=false) Long actorId, @RequestBody DeckEntity newDeckDetails) {
+        current.requireUser(actorId);
+        return dserv.deckView(dserv.putDeckDetails(id, newDeckDetails));
     }
 
     // Delete
     @DeleteMapping("/deleteDeck/{id}")
-    public String deleteDeck(@PathVariable Long id) {
+    public String deleteDeck(@PathVariable Long id,@RequestParam(required=false) Long actorId) {
+        current.requireUser(actorId);
         return dserv.deleteDeck(id);
     }
 }

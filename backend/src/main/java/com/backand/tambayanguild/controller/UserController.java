@@ -11,37 +11,33 @@ import java.util.List;
 @RequestMapping("/api/users")
 
 public class UserController {
+    private final com.backand.tambayanguild.service.CurrentUserService current;
 
     private final UserService service;
 
-    public UserController(UserService service) {
-        this.service = service; 
+    public UserController(UserService service,com.backand.tambayanguild.service.CurrentUserService current) {
+        this.service = service;this.current=current;
     }
 
     @GetMapping 
-    public List<UserEntity> getAll() { 
-        return service.findAll(); 
+    public List<Object> getAll() { 
+        current.requireUserId();
+        return service.findAll().stream().map(u -> (Object)service.profileView(u)).toList(); 
     }
 
     @GetMapping("/{id}") 
-    public UserEntity getOne(@PathVariable Long id) { 
-        return service.findById(id); 
+    public Object getOne(@PathVariable Long id) { 
+        current.requireUser(id);
+        return service.profileView(service.findById(id)); 
     }
 
-    @PostMapping 
-    @ResponseStatus(HttpStatus.CREATED) 
-    public UserEntity create(@RequestBody UserEntity UserEntity) { 
-        return service.create(UserEntity); 
-    }
-
-    @PutMapping("/{id}") 
-    public UserEntity update(@PathVariable Long id, @RequestBody UserEntity UserEntity) { 
-        return service.update(id, UserEntity); 
-    }
+    @PutMapping("/{id}/profile")
+    public Object updateProfile(@PathVariable Long id,@RequestParam(required=false) Long actorId,@RequestBody ProfileUpdate request){current.requireUser(actorId);return service.profileView(service.updateProfile(id,current.requireUserId(),request.displayName(),request.avatarUrl()));}
+    public record ProfileUpdate(String displayName,String avatarUrl){}
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT) 
     public void delete(@PathVariable Long id) { 
-        service.delete(id); 
+        current.requireUser(id);service.delete(id); 
     }
 }

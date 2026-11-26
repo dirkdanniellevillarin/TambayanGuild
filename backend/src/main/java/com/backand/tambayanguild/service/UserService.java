@@ -12,37 +12,25 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository users;
+    private final com.backand.tambayanguild.service.CurrentUserService current;
 
-    public UserService(UserRepository users) { 
-        this.users = users; 
+    public UserService(UserRepository users,com.backand.tambayanguild.service.CurrentUserService current) { 
+        this.users = users;this.current=current;
     }
     
     public List<UserEntity> findAll() { 
-        return users.findAll(); 
+        return java.util.List.of(user(current.requireUserId()));
     }
 
     public UserEntity findById(Long id) { 
-        return users.findById(id).orElseThrow(() -> new IllegalArgumentException("UserEntity not found: " + id)); 
+        current.requireUser(id);return users.findById(id).orElseThrow(() -> new IllegalArgumentException("UserEntity not found: " + id)); 
     }
 
-    public UserEntity create(UserEntity UserEntity) { 
-        UserEntity.setId(null); 
-        if (users.existsByUsername(UserEntity.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already taken");
-        }
-        return users.save(UserEntity); 
-    }
+    private UserEntity user(Long id){return users.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found"));}
 
-    public UserEntity update(Long id, UserEntity input) {
-        UserEntity UserEntity = findById(id);
-        if (users.existsByUsernameAndIdNot(input.getUsername(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already taken");
-        }
-        UserEntity.setUsername(input.getUsername()); 
-        UserEntity.setEmail(input.getEmail()); 
-        UserEntity.setPassword(input.getPassword());
-        return users.save(UserEntity);
-    }
+    public UserEntity updateProfile(Long id,Long actorId,String displayName,String avatarUrl){if(!id.equals(actorId))throw new ResponseStatusException(HttpStatus.FORBIDDEN,"You may only update your own profile");UserEntity user=findById(id);if(displayName!=null&&!displayName.isBlank()){if(users.existsByUsernameAndIdNot(displayName.trim(),id))throw new ResponseStatusException(HttpStatus.CONFLICT,"Username is already taken");user.setUsername(displayName.trim());}if(avatarUrl!=null){if(avatarUrl.length()>500)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Avatar URL is too long");user.setAvatarUrl(avatarUrl);}return users.save(user);}
+
+    public java.util.Map<String,Object> profileView(UserEntity user){var view=new java.util.LinkedHashMap<String,Object>();view.put("id",user.getId());view.put("username",user.getUsername());view.put("email",user.getEmail());view.put("createdAt",user.getCreatedAt());view.put("xp",user.getXp());view.put("coins",user.getCoins());view.put("avatarUrl",user.getAvatarUrl());return view;}
     
-    public void delete(Long id) { users.delete(findById(id)); }
+    public void delete(Long id) { throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Account deletion is not available through this endpoint"); }
 }

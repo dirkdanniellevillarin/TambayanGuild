@@ -16,7 +16,7 @@ public class FlashcardEntity {
     // one deck can have many flashcards
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "deck_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "guild", "createdBy"})
+    @com.fasterxml.jackson.annotation.JsonBackReference("deck-flashcards")
     private DeckEntity deck;
 
     // front of the card

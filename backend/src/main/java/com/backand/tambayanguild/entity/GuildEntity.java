@@ -31,6 +31,10 @@ public class GuildEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "invite_code", nullable = false, unique = true, length = 12)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private String inviteCode;
+
     public GuildEntity() {}
 
     public GuildEntity(UserEntity owner, String name, String description) {
@@ -43,6 +47,7 @@ public class GuildEntity {
     @PrePersist
     private void setCreationTimeIfMissing() {
         if (createdAt == null) createdAt = LocalDateTime.now();
+        if (inviteCode == null) inviteCode = java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     public Long getId() { 
@@ -80,5 +85,8 @@ public class GuildEntity {
     public LocalDateTime getCreatedAt() { 
         return createdAt; 
     }
+
+    public String getInviteCode() { return inviteCode; }
+    public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
     
 }

@@ -15,7 +15,7 @@ public class GuildMembersEntity {
     // one guild can have many members
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "guild_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "owner"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "owner", "inviteCode"})
     private GuildEntity guild;
 
     // one user can be a member of many guilds
@@ -30,6 +30,15 @@ public class GuildMembersEntity {
 
     @Column(name = "joined_at", nullable = false)
     private LocalDateTime joinedAt;
+
+    @Column(name = "last_active_date")
+    private java.time.LocalDate lastActiveDate;
+
+    @Column(nullable = false)
+    private int currentStreak = 0;
+
+    @Column(nullable = false)
+    private int bestStreak = 0;
 
     public GuildMembersEntity() {}
 
@@ -55,4 +64,10 @@ public class GuildMembersEntity {
     public void setGuild(GuildEntity guild) { this.guild = guild; }
     public void setUser(UserEntity user) { this.user = user; }
     public void setRole(String role) { this.role = role; }
+    public java.time.LocalDate getLastActiveDate() { return lastActiveDate; }
+    public void setLastActiveDate(java.time.LocalDate lastActiveDate) { this.lastActiveDate = lastActiveDate; }
+    public int getCurrentStreak() { return currentStreak; }
+    public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
+    public int getBestStreak() { return bestStreak; }
+    public void setBestStreak(int bestStreak) { this.bestStreak = bestStreak; }
 }

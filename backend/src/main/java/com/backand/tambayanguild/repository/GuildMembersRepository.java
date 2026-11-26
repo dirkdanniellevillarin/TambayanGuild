@@ -10,4 +10,6 @@ public interface GuildMembersRepository extends JpaRepository<GuildMembersEntity
     List<GuildMembersEntity> findByGuild_Id(Long guildId);
     List<GuildMembersEntity> findByUser_Id(Long userId);
     boolean existsByGuild_IdAndUser_Id(Long guildId, Long userId);
+    java.util.Optional<GuildMembersEntity> findByGuild_IdAndUser_Id(Long guildId, Long userId);
+    long countByGuild_Id(Long guildId);
 }
